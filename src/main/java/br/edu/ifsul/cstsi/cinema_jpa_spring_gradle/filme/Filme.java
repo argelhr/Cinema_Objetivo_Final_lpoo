@@ -35,6 +35,6 @@ public class Filme {
 
     @Override
     public String toString() {
-        return "Titulo: " + titulo + " ;duração: " + escreveTempo();
+        return "Cod: " + id + " Titulo: " + titulo + " ;duração: " + escreveTempo();
     }
 }

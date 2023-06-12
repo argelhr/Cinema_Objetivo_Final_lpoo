@@ -2,6 +2,7 @@ package br.edu.ifsul.cstsi.cinema_jpa_spring_gradle;
 
 import br.edu.ifsul.cstsi.cinema_jpa_spring_gradle.filme.FilmeController;
 import br.edu.ifsul.cstsi.cinema_jpa_spring_gradle.sala.SalaController;
+import br.edu.ifsul.cstsi.cinema_jpa_spring_gradle.sessao.SessaoController;
 
 import java.util.Scanner;
 
@@ -26,7 +27,7 @@ public class CinemaController {
                 case 1 -> FilmeController.main(null);
                 case 2 -> SalaController.main(null);
 ////            case 3 -> IngressoController(null);
-////            case 4 ->
+                case 4 -> SessaoController.main(null);
                 case 0 -> System.out.println("Dia Finalizado");
                 default -> System.out.println("Opção invalida");
             }

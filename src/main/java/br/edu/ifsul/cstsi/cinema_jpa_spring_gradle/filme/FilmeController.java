@@ -34,19 +34,19 @@ public class FilmeController {
                 case 3 -> desativar();
                 case 4 -> reativar();
                 case 5 -> listarFilmes();
+                case 0 -> CinemaController.main(null);
                 default -> System.out.println("Opção incorreta tente novamente!");
             }
 
-        } while (opcao != 0);
+        } while (opcao <0 || opcao >5);
 
-        CinemaController.main(null);
 
     }
 
     public static void listarFilmes() {
         List<Filme> filmes = filmeService.getFilmes();
 
-        if (filmes.size() != 0) {
+        if (!filmes.isEmpty()) {
             filmes.forEach(f -> {
                 System.out.println("cod: " + f.getId() + " - " + f + "Duração: " + f.escreveTempo());
             });
@@ -295,75 +295,3 @@ public class FilmeController {
 
     }
 }
-
-//    public static void desativarFilme() {
-//
-//        long opcao;
-////        listarFilmes();
-//        do {
-//            System.out.println("Qual o código do filme para excluir?(Zero para retornar ao menu anterior...");
-//            opcao = teclado.nextLong();
-//
-//            if (opcao != 0) {
-////                Filme filme = FilmeDAO.selectFilmeByID(opcao);
-//                do {
-//                    System.out.println("Tem certeza que deseja desativar este filme?(1.OK 2.Cancelar");
-//                    opcao = teclado.nextLong();
-//                } while (opcao < 1 || opcao > 2);
-//                if (opcao == 1) {
-////                    if (FilmeDAO.softdelete(filme.getCodfilme())) {
-////                        System.out.println("Desativação do filme: " + filme.getTitulo() + ", concluida");
-////                    } else System.out.println("Aconteceu algum problema");
-////                }
-//                do {
-//                    System.out.println("Deseja realizar outra operação de delete?");
-//                    opcao = teclado.nextLong();
-//                    if (opcao < 1 || opcao > 2)
-//                        System.out.println("Valor incorreto, tente novamente");
-//                } while (opcao < 1 || opcao > 2);
-//
-//            }
-//        }
-//        while (opcao != 0);
-//        FilmeController.main(null);
-//
-//
-//    }
-//
-////    public static void reativarFilme() {
-////        long opcao;
-//        do {
-////            List<Filme> filmes = FilmeDAO.buscarFilmesDesativados();
-//
-////            if (filmes.size() == 0) {
-////                System.out.println("Não existem filmes desativados no momento");
-////                FilmeController.main(null);
-////            }
-//
-////            filmes.forEach(filme -> {
-////                System.out.println("Cod: " + filme.getCodfilme() + "- " + filme.getTitulo());
-//            });
-//
-//            opcao = teclado.nextLong();
-//            teclado.nextLine();
-//
-//            System.out.println("Qual o código do filme para reativar?(Zero para retornar ao menu anterior...");
-//
-//            if (opcao != 0) {
-////                Filme filme = FilmeDAO.selectFilmeByID(opcao);
-//                do {
-//                    System.out.println("Tem certeza que deseja reativar este filme?(1.OK 2.Cancelar");
-//                    opcao = teclado.nextLong();
-//                } while (opcao < 1 || opcao > 2);
-//                if (opcao == 1) {
-////                    if (FilmeDAO.updateFilmeSituacao(filme.getCodfilme()))
-////                        System.out.println("Reativação do filme: " + filme.getTitulo() + ", concluida");
-//                } else System.out.println("Aconteceu algum problema");
-//            }
-//        } while (opcao != 0);
-//
-//        FilmeController.main(null);
-//
-//    }
-//
-//}
