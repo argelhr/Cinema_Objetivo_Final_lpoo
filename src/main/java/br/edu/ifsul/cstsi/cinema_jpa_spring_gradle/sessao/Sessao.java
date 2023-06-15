@@ -8,10 +8,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
-import java.sql.Time;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 
 @Entity
@@ -46,4 +46,18 @@ public class Sessao {
     @ManyToOne
     @JoinColumn(name = "cod_filme", referencedColumnName = "id", nullable = false)
     private Filme filmeByCodFilme;
+
+    @Override
+    public String toString() {
+        return "[id: " + id + " || Status: " + (encerrada ? "encerrada" : "aberta") +
+                "\nFilme["+ filmeByCodFilme +
+                "]\nSala: " + salaByCodSala.getId() + " ||  Hora:" + horSessao + " || data: " + DateTimeFormatter.ofPattern("dd/MM/YYYY").format(dtSessao) +
+                "\nInteira: " + NumberFormat.getCurrencyInstance().format(valorInteira) +
+                " || MeiaEntrada:" + NumberFormat.getCurrencyInstance().format(valorMeia) +
+                ']';
+    }
+
+    public Integer buscaQtd(){
+        return this.salaByCodSala.getCapacidade();
+    }
 }

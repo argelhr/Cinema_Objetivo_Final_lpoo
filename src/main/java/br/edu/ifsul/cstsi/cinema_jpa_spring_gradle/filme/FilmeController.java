@@ -10,6 +10,7 @@ import java.util.Scanner;
 public class FilmeController {
     private static final Scanner teclado = new Scanner(System.in);
     private static FilmeService filmeService;
+
     public FilmeController(FilmeService filmeService) {
         FilmeController.filmeService = filmeService;
     }
@@ -38,7 +39,8 @@ public class FilmeController {
                 default -> System.out.println("Opção incorreta tente novamente!");
             }
 
-        } while (opcao <0 || opcao >5);
+        } while (opcao < 1 || opcao > 5);
+        CinemaController.main(null);
 
 
     }
@@ -101,14 +103,16 @@ public class FilmeController {
         do {
             List<Filme> filmes = filmeService.getFilmesBySituacao(true);
 
-            if (filmes.size() != 0) {
+            if (!filmes.isEmpty()) {
                 filmes.forEach(f -> {
                     System.out.println("cod: " + f.getId() + " - " + f);
                 });
 
+
                 System.out.println("Qual o código do filme para ser alterado?(zero para finalizar");
                 opcao = teclado.nextLong();
                 teclado.nextLine();
+
             } else {
                 System.out.println("Não há filmes ativos no momento");
                 opcao = 0;
@@ -165,21 +169,19 @@ public class FilmeController {
                 } else {
                     System.out.println("Filme não foi encontrado");
                 }
-                do {
-                    System.out.println("Deseja tentar novamente?(1.Sim 2.Não");
-                    opcao = teclado.nextLong();
-                    teclado.nextLine();
-                    if (opcao < 1L || opcao > 2L)
-                        System.out.println("Operação invalida, tente novamente...\n");
-
-                } while (opcao < 1L || opcao > 2L);
-                if (opcao == 2L)
-                    opcao = 0;
             }
+            do {
+                System.out.println("Deseja tentar novamente?(1.Sim 2.Não");
+                opcao = teclado.nextLong();
+                teclado.nextLine();
+                if (opcao < 1L || opcao > 2L)
+                    System.out.println("Operação invalida, tente novamente...\n");
+
+            } while (opcao < 1L || opcao > 2L);
 
 
         }
-        while (opcao != 0);
+        while (opcao != 2L);
     }
 
     public static void desativar() {
@@ -190,7 +192,7 @@ public class FilmeController {
 
             List<Filme> filmes = filmeService.getFilmesBySituacao(true);
 
-            if (filmes.size() != 0) {
+            if (!filmes.isEmpty()) {
                 filmes.forEach(f -> {
                     System.out.println("cod: " + f.getId() + " - " + f);
                 });
@@ -244,9 +246,9 @@ public class FilmeController {
             List<Filme> filmes = filmeService.getFilmesBySituacao(false);
 
             if (filmes.size() != 0) {
-                filmes.forEach(f -> {
-                    System.out.println("cod: " + f.getId() + " - " + f);
-                });
+                filmes.forEach(f ->
+                        System.out.println("cod: " + f.getId() + " - " + f)
+                );
 
                 System.out.println("Qual o código do filme para ser reativado?(zero para finalizar");
                 opcao = teclado.nextLong();

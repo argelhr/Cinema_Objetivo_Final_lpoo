@@ -17,7 +17,7 @@ public class Ingresso {
     private Long id;
     @Basic
     @Column(name = "tipo")
-    private Integer tipo;
+    private Tipo_ingresso tipo;
     @ManyToOne
     @JoinColumn(name = "sessao", referencedColumnName = "id")
     private Sessao sessaoBySessao;
