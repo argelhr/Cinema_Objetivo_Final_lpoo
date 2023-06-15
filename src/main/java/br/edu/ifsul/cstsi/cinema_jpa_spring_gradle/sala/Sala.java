@@ -20,9 +20,7 @@ public class Sala {
     @Basic
     @Column(name = "capacidade")
     private Integer capacidade;
-//    @Basic
-//    @Column(name = "nr_sala")
-//    private String nrSala;
+
     @Basic
     @Column(name = "status")
     private Boolean status;
@@ -31,7 +29,7 @@ public class Sala {
 
     @Override
     public String toString() {
-        return "[id:" + id +" | capacidade: " + capacidade +
+        return "Sala[id:" + id +" | capacidade: " + capacidade +
                 " | status: " + (status?"Ativo":"Desativado") +
                 "]";
     }

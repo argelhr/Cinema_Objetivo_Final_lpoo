@@ -24,7 +24,11 @@ public class SalaService {
 
     }
     public List<Sala> getSalas(){
-        return new ArrayList<>(rep.findAll());
+
+        ArrayList<Sala> salas = new ArrayList<>(rep.findAll());
+        if(salas.isEmpty())
+            return null;
+        return salas;
     }
 
 
@@ -36,6 +40,7 @@ public class SalaService {
     }
 
     public List<Sala> getSalasBySituacao(boolean b) {
+
         return rep.getSalasBySituacao(b);
     }
     public Sala getSalaByIdAndSituacao(Long id,Boolean b) {

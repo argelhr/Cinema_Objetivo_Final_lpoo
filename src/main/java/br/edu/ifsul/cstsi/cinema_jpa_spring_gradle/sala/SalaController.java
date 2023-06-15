@@ -4,6 +4,7 @@ import br.edu.ifsul.cstsi.cinema_jpa_spring_gradle.CinemaController;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 @Controller
@@ -25,7 +26,7 @@ public class SalaController {
                     2. Alterar Capacidade da Sala
                     3. Desativar Sala
                     4. Reativar Sala
-                    5. Listar Sala
+                    5. Listar Salas
                     0. Voltar ao menu anterior...""");
             opcao = teclado.nextInt();
             teclado.nextLine();
@@ -34,7 +35,7 @@ public class SalaController {
                 case 2 -> atualizar();
 //                case 3 -> desativar();
 //                case 4 -> reativar();
-//                case 5 -> listarFilmes();
+                case 5 -> listarSalas(true);
                 default -> System.out.println("Opção incorreta tente novamente!");
             }
 
@@ -85,15 +86,20 @@ public class SalaController {
 
         do {
 
-            List<Sala> salaList = salaService.getSalas();
-            salaList.forEach(System.out::println);
+            List<Sala> salaList = getSalas(true);
 
             if (!salaList.isEmpty()) {
+                salaList.forEach(System.out::println);
                 System.out.println("Qual o código da sala a ser editada?(zero para finalizar)");
                 opcao = teclado.nextLong();
                 teclado.nextLine();
 
-                Sala sala = salaService.getSalaByID(opcao);
+                Sala sala = null;
+
+                for(Sala s :salaList){
+                    if(s.getId() == opcao)
+                        sala = s;
+                }
 
                 if (sala != null) {
 
@@ -130,11 +136,49 @@ public class SalaController {
                 if (opcao == 2)
                     opcao = 0;
             } else {
-                System.out.println("Nenhuma sala cadastrada até o momento");
+                System.out.println("Nenhuma sala ativa até o momento");
+                System.out.println("Retornando ao menu anterior...");
                 opcao = 0;
 
             }
         }
         while (opcao != 0);
+    }
+//    public static void desativar(){
+//
+//        Long opcao;
+//
+//        List<Sala> salaList = getSalas(true);
+//
+//        if(salaList!= null){
+//
+//            salaList.forEach(System.out::println);
+//
+//            System.out.println("Qual a sala a ser desativada?");
+//            opcao = teclado.nextLong();
+//            teclado.nextLine();
+//
+//            Sala sala = null;
+//
+//            for(Sala s : salaList){
+//                if(Objects.equals(s.getId(), opcao)) {
+//                    sala = s;
+//                }
+//                if(sala != null)
+//            }
+//        }
+//    }
+    public static List<Sala> getSalas(Boolean bool){
+        List<Sala> salaList = salaService.getSalasBySituacao(bool);
+        if(salaList.isEmpty())
+            return null;
+        return salaList;
+    }
+    public static void listarSalas(Boolean bool){
+        List<Sala> salaList = getSalas(bool);
+        if(salaList != null)
+            salaList.forEach(System.out::println);
+        else
+            System.out.println("Nenhuma sala ativa no momento");
     }
 }

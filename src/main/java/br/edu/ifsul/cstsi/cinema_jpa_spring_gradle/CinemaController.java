@@ -34,8 +34,10 @@ public class CinemaController {
                 case 0 -> System.out.println("Dia Finalizado");
                 default -> System.out.println("Opção invalida");
             }
-        }
-        while (opcao < 0 || opcao > 4);
+        } while (opcao < 0 || opcao > 4);
     }
-
+    //todo listar sessao pelo filme
+    // todo inserir ingresso
+    // todo deativar sala -> desativar sessao
+    // todo desativar filme -> desativa sessao
 }
