@@ -30,11 +30,11 @@ public class Filme {
     private Collection<Sessao> sessaosByCodFilme;
 
     public String escreveTempo() {
-        return (this.getDuracao() / 60 + "h " + this.getDuracao() % 60 + "min");
+        return (this.getDuracao() / 60 + "h " + (this.getDuracao() % 60 > 0 ? this.getDuracao() % 60 + "min" : ""));
     }
 
     @Override
     public String toString() {
-        return "Cod: " + id + " || Titulo: " + titulo + "  || Duração: " + escreveTempo();
+        return "ID: " + id + " || Titulo: " + titulo + "  || Duração: " + escreveTempo() + "|| Status: " + (getSituacao() ? "Ativo" : "Desativado");
     }
 }

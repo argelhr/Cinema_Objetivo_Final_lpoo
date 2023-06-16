@@ -64,7 +64,7 @@ public class SessaoController {
                 System.out.println("Qual o filme para esta sessão?(Zero para cancelar)");
                 opcao = teclado.nextLong();
                 teclado.nextLine();
-                sessao.setFilmeByCodFilme(filmeService.getFilmeByIdAndSituacao(opcao, true));
+                sessao.setFilmeByCodFilme(filmeService.getFilmeById(opcao));
                 if (sessao.getFilmeByCodFilme() != null) {
                     salas.forEach(System.out::println);
                     System.out.println("Qual a sala dessa budega?(zero para cancelar");

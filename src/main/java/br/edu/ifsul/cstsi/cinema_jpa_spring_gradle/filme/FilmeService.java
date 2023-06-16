@@ -23,16 +23,24 @@ public class FilmeService {
         return null;
     }
 
-    public List<Filme> getFilmesBySituacao(Boolean status) {
-        return rep.findFilmesBySituacao(status);
+    public List<Filme> getFilmeByTitulo(String titulo) {
+        List<Filme> filmes = rep.findByTitulo('%' + titulo + '%');
+
+        if(filmes.isEmpty()){
+            return null;
+        }
+        return filmes;
+
     }
-    public Filme getFilmeByIdAndSituacao(Long id, Boolean status){
-        return rep.findFilmesByIdAndSituacao(id,status);
+
+    public List<Filme> getFilmesBySituacao(Boolean status) {
+
+        return rep.findFilmesBySituacao(status);
     }
 
     public Boolean alterar(Filme filme) {
 
-        Assert.notNull(filme.getId(), "Não é possivel realizar o regitro");
+        Assert.notNull(filme.getId(), "Não é possivel realizar o regitro com id nulo");
 
         Optional<Filme> f = rep.findById(filme.getId());
         if (f.isPresent()) {
@@ -52,28 +60,30 @@ public class FilmeService {
         return rep.save(filme);
     }
 
-    public Boolean desativa(Long id) {
+    public Filme desativa(Long id) {
 
         Assert.notNull(id, "Não foi possivel realizar a operação");
 
-        Filme filme = rep.findFilmesByIdAndSituacao(id, true);
-        if (filme!=null) {
-            filme.setSituacao(false);
-            rep.save(filme);
-            return true;
+        Optional<Filme> filme = rep.findById(id);
+        if (filme.isPresent()) {
+            Filme f = filme.get();
+            f.setSituacao(false);
+            rep.save(f);
+            return f;
         }
-        return false;
+        return null;
     }
 
-    public Boolean reativa(Long id){
-        Assert.notNull(id,"Não foi possível realizar a operação");
+    public Filme reativa(Long id) {
+        Assert.notNull(id, "Não foi possível realizar a operação");
 
-        Filme filme = rep.findFilmesByIdAndSituacao(id,false);
-        if(filme!= null){
-            filme.setSituacao(true);
-            rep.save(filme);
-            return true;
+        Optional<Filme> filme = rep.findById(id);
+        if (filme.isPresent()) {
+            Filme f = filme.get();
+            f.setSituacao(true);
+            rep.save(f);
+            return f;
         }
-        return false;
+        return null;
     }
 }

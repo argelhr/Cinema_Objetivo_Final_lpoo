@@ -21,8 +21,7 @@ public class CinemaController {
                     2. Gerenciar Salas
                     3. Gerenciar Sessões
                     4. Gerenciar Ingressos
-                    0. Finalizar o dia"
-                                        
+                    0. Finalizar o dia
                     """);
             opcao = teclado.nextInt();
             teclado.nextLine();
@@ -34,7 +33,7 @@ public class CinemaController {
                 case 0 -> System.out.println("Dia Finalizado");
                 default -> System.out.println("Opção invalida");
             }
-        } while (opcao < 0 || opcao > 4);
+        } while (opcao > 0 && opcao <= 4);
     }
     //todo listar sessao pelo filme
     // todo inserir ingresso
