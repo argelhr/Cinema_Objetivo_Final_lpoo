@@ -34,19 +34,21 @@ public class SessaoController {
                     1. Cadastrar Sessao
                     2. Finalizar Sessao
                     3. Listar Sessões Ativas
-                    0. Voltar ao menu anterior""");
+                    4. Listar Sessões Desativadas
+                    0. Voltar ao menu anterior
+                    """);
             opcao = teclado.nextInt();
             teclado.nextLine();
             switch (opcao) {
                 case 1 -> inserir();
                 case 2 -> desativar();
                 case 3 -> listarBySituacao(false);
+                case 4 -> listarBySituacao(true);
                 case 0 -> CinemaController.main(null);
                 default -> System.out.println("Opção incorreta, tente novamente");
             }
 
-        } while (opcao > 0 && opcao < 4);
-        CinemaController.main(null);
+        } while (opcao > 0 && opcao < 5);
 
     }
 
@@ -57,30 +59,45 @@ public class SessaoController {
         List<Sala> salas = salaService.getSalasBySituacao(true);
 
         do {
-            Sessao sessao = new Sessao();
+            if (!filmes.isEmpty() || !salas.isEmpty()) {
+                Sessao sessao = new Sessao();
 
-            if (!filmes.isEmpty()) {
                 filmes.forEach(System.out::println);
                 System.out.println("Qual o filme para esta sessão?(Zero para cancelar)");
                 opcao = teclado.nextLong();
                 teclado.nextLine();
-                sessao.setFilmeByCodFilme(filmeService.getFilmeById(opcao));
+                for (Filme f : filmes) {
+                    if (opcao == f.getId()) {
+                        sessao.setFilmeByCodFilme(f);
+                        break;
+                    }
+                }
                 if (sessao.getFilmeByCodFilme() != null) {
                     salas.forEach(System.out::println);
-                    System.out.println("Qual a sala dessa budega?(zero para cancelar");
+                    System.out.println("Qual a sala dessa sessao?(zero para cancelar");
                     opcao = teclado.nextLong();
                     teclado.nextLine();
-//                    sessao.setSalaByCodSala(salaService.getSalaByIdAndSituacao(opcao, true));
+                    for (Sala s : salas) {
+                        if (s.getId() == opcao) {
+                            sessao.setSalaByCodSala(s);
+                            break;
+                        }
+                    }
                     if (sessao.getSalaByCodSala() != null) {
 
                         LocalDate data;
                         LocalTime horario;
 
                         data = montaData();
+
                         if (data != null) {
+
                             sessao.setDtSessao(data);
+
                             horario = montaHora();
+
                             if (horario != null) {
+
                                 sessao.setHoraSessao(horario);
 
                                 if (verificaDisponibilidade(sessao)) {
@@ -89,16 +106,14 @@ public class SessaoController {
                                         System.out.println("Qual o valor da entrada inteira");
                                         sessao.setValorInteira(teclado.nextDouble());
                                         teclado.nextLine();
-                                        if (sessao.getValorInteira() <= 0)
-                                            System.out.println("Valor incorreto");
+                                        if (sessao.getValorInteira() <= 0) System.out.println("Valor incorreto");
                                     } while (sessao.getValorInteira() <= 0);
 
                                     do {
                                         System.out.println("Qual o valor da entrada meia?");
                                         sessao.setValorMeia(teclado.nextDouble());
                                         teclado.nextLine();
-                                    }
-                                    while (sessao.getValorMeia() <= 0);
+                                    } while (sessao.getValorMeia() <= 0);
 
                                     sessao.setEncerrada(false);
 
@@ -109,34 +124,33 @@ public class SessaoController {
                                         teclado.nextLine();
                                         if (opcao < 1 || opcao > 2)
                                             System.out.println("Ops, opção incorreta, tente novamente");
-                                    }
-                                    while (opcao < 1 || opcao > 2);
-                                    if (opcao == 1)
+                                    } while (opcao < 1 || opcao > 2);
+                                    if (opcao == 1) {
                                         System.out.println("Sessao adicionada: " + sessaoService.insert(sessao));
-                                    else
+                                    } else {
                                         System.out.println("Operação cancelada");
+                                    }
                                 } else {
-                                    System.err.println("Horario indisponivel, tente novamente");
+                                    System.err.println("Horario indisponivel, cadastro cancelado");
                                 }
                             } else {
-                                System.err.println("Horario informado é incorreto");
+                                System.err.println("Horario informado é incorreto, cadastro cancelado");
                             }
                         } else {
                             System.err.println("Data informada é de formato incorreto");
                         }
 
-
                     } else {
-                        if (opcao == 0)
+                        if (opcao == 0) {
                             System.err.println("Operação cancelada");
-                        else
+                        } else {
                             System.err.println("Codigo de sala nao foi encontrado, cadastro cancelado");
+                        }
                     }
                 } else {
-                    if (opcao == 0)
+                    if (opcao == 0) {
                         System.err.println("Operação cancelada");
-                    else
-                        System.err.println("Filme nao foi encontrado, cadastro cancelado");
+                    } else System.err.println("Filme nao foi encontrado, cadastro cancelado");
                 }
 
                 do {
@@ -145,19 +159,16 @@ public class SessaoController {
                     System.out.println("Deseja realizar o processo novamente?(1.sim 2.Não)");
                     opcao = teclado.nextLong();
                     teclado.nextLine();
-                    if (opcao < 1 || opcao > 2)
-                        System.out.println("Ops, opção errada, tente novamente");
+                    if (opcao < 1 || opcao > 2) System.out.println("Ops, opção errada, tente novamente");
                 } while (opcao < 1 || opcao > 2);
-                if (opcao == 2)
-                    opcao = 0;
+                if (opcao == 2) opcao = 0;
             } else {
-                System.err.println("Nenhum filme foi encontrado, cadastro cancelado");
+                System.err.println("Nenhum filme ou sala foram encontrado, cadastro cancelado");
                 System.out.println("Retornando ao menu anterior");
                 opcao = 0;
             }
 
-        }
-        while (opcao != 0);
+        } while (opcao != 0);
 
     }
 
@@ -170,19 +181,15 @@ public class SessaoController {
                 System.out.println("Qual o dia da sessão");
                 dia = teclado.nextInt();
                 teclado.nextLine();
-                if (dia < 0 || dia > 31)
-                    System.out.println("Ops, dia informado é invalido, tente novamente");
-            }
-            while (dia < 1 || dia > 31);
+                if (dia < 0 || dia > 31) System.out.println("Ops, dia informado é invalido, tente novamente");
+            } while (dia < 1 || dia > 31);
 
             do {
                 System.out.println("Qual o mes da sessao");
                 mes = teclado.nextInt();
                 teclado.nextLine();
-                if (mes < 1 || mes > 12)
-                    System.out.println("Ops, valor de mes invalido, tente novamente");
-            }
-            while (mes < 1 || mes > 12);
+                if (mes < 1 || mes > 12) System.out.println("Ops, valor de mes invalido, tente novamente");
+            } while (mes < 1 || mes > 12);
 
 
             data = LocalDate.of(2023, mes, dia);
@@ -202,22 +209,19 @@ public class SessaoController {
                 System.out.println("Informa o hora da sessao");
                 hora = teclado.nextInt();
                 teclado.nextLine();
-                if (hora < 0 || hora > 23)
+                if (hora < 0 || hora > 23) {
                     System.out.println("Ops, data invalida, tente novamente");
-            }
-            while (hora < 0 || hora > 23);
+                }
+            } while (hora < 0 || hora > 23);
 
             do {
                 System.out.println("Informa o minuto da sessao");
                 min = teclado.nextInt();
                 teclado.nextLine();
-                if (min < 0 || min > 59)
-                    System.out.println("Ops, data invalida, tente novamente");
-            }
-            while (min < 0 || min > 59);
+                if (min < 0 || min > 59) System.out.println("Ops, data invalida, tente novamente");
+            } while (min < 0 || min > 59);
 
-            LocalTime horario = LocalTime.of(hora, min);
-            return horario;
+            return LocalTime.of(hora, min);
         } catch (Exception e) {
             System.out.println("Horario invalido...");
             return null;
@@ -225,7 +229,7 @@ public class SessaoController {
     }
 
     public static Boolean verificaDisponibilidade(Sessao sessao) {
-        List<Sessao> sessaoList = sessaoService.getSessoesByDataAndSituacaoAndSala(sessao.getDtSessao(), false,sessao.getSalaByCodSala());
+        List<Sessao> sessaoList = sessaoService.getSessoesByDataAndSituacaoAndSala(sessao.getDtSessao(), false, sessao.getSalaByCodSala());
 
         for (Sessao s : sessaoList) {
             Duration tempo;
@@ -252,46 +256,58 @@ public class SessaoController {
 
     public static void desativar() {
         long opcao;
-        listarBySituacao(false);
-        System.out.println("Qual a sessão a ser desabilitada");
-        opcao = teclado.nextLong();
-        teclado.nextLine();
 
-        Sessao sessao = sessaoService.getSessaoById(opcao);
-        if(!sessao.getEncerrada() && sessao != null){
-            do {
-                System.out.println(sessao);
-                System.out.println("Deseja desativar a seção acima?(1.sim 2.Não");
-                opcao = teclado.nextLong();
-                teclado.nextLine();
+        List<Sessao> sessaoList = sessaoService.getSessoesBySituacao(false);
+
+        if (!sessaoList.isEmpty()) {
+
+            sessaoList.forEach(System.out::println);
+
+            System.out.println("Qual a sessão a ser desabilitada");
+            opcao = teclado.nextLong();
+            teclado.nextLine();
+
+            Sessao sessao = null;
+            for (Sessao s : sessaoList) {
+                if (s.getId() == opcao) {
+                    sessao = s;
+                }
             }
-            while (opcao!=1 && opcao!= 2);
-            if(opcao == 1) {
-                sessaoService.disable(sessao);
-                System.out.println("Sessao desabilitada:" + sessao.getId());
+
+            if (sessao != null) {
+
+                do {
+                    System.out.println(sessao);
+                    System.out.println("Deseja desativar a seção acima?(1.sim 2.Não");
+                    opcao = teclado.nextLong();
+                    teclado.nextLine();
+                } while (opcao != 1 && opcao != 2);
+
+                if (opcao == 1) {
+                    sessao = sessaoService.disable(sessao);
+                    System.out.println("Sessao desabilitada:" + sessao);
+                } else {
+                    System.out.println("Operação foi cancelada");
+                }
+            } else {
+                System.out.println("Sessao nao foi encontrada");
             }
 
 
         }
-        else
-            System.out.println("Sessao nao foi encontrada");
-
-
     }
 
     public static void listarBySituacao(Boolean bool) {
 
         List<Sessao> sessaoList = sessaoService.getSessoesBySituacao(bool);
         if (sessaoList.isEmpty())
-            System.out.println("Não foi encontrada nenhuma sessão ativa");
+            System.out.println("Não foi encontrada nenhuma sessão " + (bool ? "encerrada" : "ativa"));
         else
             sessaoList.forEach(System.out::println);
 
     }
 
-    public static void getByIdAndSituacao(Long id, Boolean bool){
 
-    }
 }
 
 

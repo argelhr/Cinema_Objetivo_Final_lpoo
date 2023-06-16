@@ -49,12 +49,13 @@ public class Sessao {
 
     @Override
     public String toString() {
-        return "[id: " + id + " || Status: " + (encerrada ? "encerrada" : "aberta") +
+        return "================================================================================" +
+                "\n[id: " + id + " || Status: " + (encerrada ? "encerrada" : "aberta") +
                 "\nFilme["+ filmeByCodFilme +
                 "]\nSala: " + salaByCodSala.getId() + " ||  Hora:" + horaSessao + " || data: " + DateTimeFormatter.ofPattern("dd/MM/YYYY").format(dtSessao) +
                 "\nInteira: " + NumberFormat.getCurrencyInstance().format(valorInteira) +
                 " || MeiaEntrada:" + NumberFormat.getCurrencyInstance().format(valorMeia) +
-                ']';
+                "]\n================================================================================";
     }
 
 //    public Integer buscaQtd(){
