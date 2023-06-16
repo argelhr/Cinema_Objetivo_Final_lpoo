@@ -70,7 +70,7 @@ public class SessaoController {
                     System.out.println("Qual a sala dessa budega?(zero para cancelar");
                     opcao = teclado.nextLong();
                     teclado.nextLine();
-                    sessao.setSalaByCodSala(salaService.getSalaByIdAndSituacao(opcao, true));
+//                    sessao.setSalaByCodSala(salaService.getSalaByIdAndSituacao(opcao, true));
                     if (sessao.getSalaByCodSala() != null) {
 
                         LocalDate data;
@@ -81,7 +81,7 @@ public class SessaoController {
                             sessao.setDtSessao(data);
                             horario = montaHora();
                             if (horario != null) {
-                                sessao.setHorSessao(horario);
+                                sessao.setHoraSessao(horario);
 
                                 if (verificaDisponibilidade(sessao)) {
 
@@ -229,15 +229,15 @@ public class SessaoController {
 
         for (Sessao s : sessaoList) {
             Duration tempo;
-            if (sessao.getHorSessao().isBefore(s.getHorSessao())) {
-                tempo = Duration.between(sessao.getHorSessao(), s.getHorSessao());
+            if (sessao.getHoraSessao().isBefore(s.getHoraSessao())) {
+                tempo = Duration.between(sessao.getHoraSessao(), s.getHoraSessao());
                 long horas = tempo.toHours();
                 long mins = tempo.toMinutes();
                 if (sessao.getFilmeByCodFilme().getDuracao() > horas * 60 + mins + 20) {
                     return false;
                 }
             } else {
-                tempo = Duration.between(s.getHorSessao(), sessao.getHorSessao());
+                tempo = Duration.between(s.getHoraSessao(), sessao.getHoraSessao());
                 long horas = tempo.toHours();
                 long mins = tempo.toMinutes();
                 if (s.getFilmeByCodFilme().getDuracao() > horas * 60 + mins + 20) {

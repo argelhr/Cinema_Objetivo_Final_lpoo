@@ -1,6 +1,5 @@
 package br.edu.ifsul.cstsi.cinema_jpa_spring_gradle.sala;
 
-import br.edu.ifsul.cstsi.cinema_jpa_spring_gradle.filme.Filme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -14,24 +13,28 @@ public class SalaService {
     @Autowired
     private SalaRepository rep;
 
-    public Sala getSalaByID(Long id){
+    public Sala getSalaByID(Long id) {
 
         Optional<Sala> optionalSala = rep.findById(id);
-        if(optionalSala.isPresent()){
+        if (optionalSala.isPresent()) {
             return optionalSala.get();
         }
         return null;
 
     }
-    public List<Sala> getSalas(){
+
+    public List<Sala> getSalas() {
 
         ArrayList<Sala> salas = new ArrayList<>(rep.findAll());
-        if(salas.isEmpty())
+        if (salas.isEmpty())
             return null;
         return salas;
     }
 
+    public List<Sala> getSalasBySituacao(Boolean b) {
 
+        return rep.getSalasBySituacao(b);
+    }
     public Sala insertSala(Sala sala) {
 
         Assert.isNull(sala.getId(), "Não foi possivel realizar o cadastro");
@@ -39,11 +42,37 @@ public class SalaService {
 
     }
 
-    public List<Sala> getSalasBySituacao(boolean b) {
+    public Sala update(Sala s) {
+        Assert.notNull(s.getId(), "Não foi possivel atualizar a sala");
 
-        return rep.getSalasBySituacao(b);
+        Optional<Sala> salaOptional = rep.findById(s.getId());
+        if (salaOptional.isPresent()) {
+            Sala sala = salaOptional.get();
+            sala.setCapacidade(s.getCapacidade());
+            return rep.save(sala);
+        }
+        return null;
     }
-    public Sala getSalaByIdAndSituacao(Long id,Boolean b) {
-        return rep.getSalaByIdAndSituacao(id,b);
+    public Sala reativar(Sala s){
+        Assert.notNull(s.getId(),"Não é possivel reativar por ser nulo");
+        Optional<Sala> salaOptional= rep.findById(s.getId());
+
+        if(salaOptional.isPresent()) {
+            Sala sala = salaOptional.get();
+            sala.setStatus(true);
+            return rep.save(sala);
+        }
+        return null;
+    }
+    public Sala desativar(Sala s){
+        Assert.notNull(s.getId(),"Não é possivel reativar por ser nulo");
+        Optional<Sala> salaOptional= rep.findById(s.getId());
+
+        if(salaOptional.isPresent()) {
+            Sala sala = salaOptional.get();
+            sala.setStatus(false);
+            return rep.save(sala);
+        }
+        return null;
     }
 }

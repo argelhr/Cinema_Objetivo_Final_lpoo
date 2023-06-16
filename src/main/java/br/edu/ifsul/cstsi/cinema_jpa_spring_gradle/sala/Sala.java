@@ -16,7 +16,7 @@ import java.util.Collection;
 public class Sala {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private Integer id;
+    private Long id;
     @Basic
     @Column(name = "capacidade")
     private Integer capacidade;
@@ -29,8 +29,8 @@ public class Sala {
 
     @Override
     public String toString() {
-        return "Sala[id:" + id +" | capacidade: " + capacidade +
-                " | status: " + (status?"Ativo":"Desativado") +
+        return "[id:" + id +" | capacidade: " + capacidade +
+                " | status: " + (status?"Ativa":"Desativada") +
                 "]";
     }
 }

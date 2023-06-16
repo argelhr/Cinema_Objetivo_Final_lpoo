@@ -27,8 +27,8 @@ public class Sessao {
     @Column(name = "dt_sessao")
     private LocalDate dtSessao;
     @Basic
-    @Column(name = "hor_sessao")
-    private LocalTime horSessao;
+    @Column(name = "hora_sessao")
+    private LocalTime horaSessao;
     @Basic
     @Column(name = "valor_inteira")
     private Double valorInteira;
@@ -51,13 +51,13 @@ public class Sessao {
     public String toString() {
         return "[id: " + id + " || Status: " + (encerrada ? "encerrada" : "aberta") +
                 "\nFilme["+ filmeByCodFilme +
-                "]\nSala: " + salaByCodSala.getId() + " ||  Hora:" + horSessao + " || data: " + DateTimeFormatter.ofPattern("dd/MM/YYYY").format(dtSessao) +
+                "]\nSala: " + salaByCodSala.getId() + " ||  Hora:" + horaSessao + " || data: " + DateTimeFormatter.ofPattern("dd/MM/YYYY").format(dtSessao) +
                 "\nInteira: " + NumberFormat.getCurrencyInstance().format(valorInteira) +
                 " || MeiaEntrada:" + NumberFormat.getCurrencyInstance().format(valorMeia) +
                 ']';
     }
 
-    public Integer buscaQtd(){
-        return this.salaByCodSala.getCapacidade();
-    }
+//    public Integer buscaQtd(){
+//        return this.salaByCodSala.getCapacidade();
+//    }
 }

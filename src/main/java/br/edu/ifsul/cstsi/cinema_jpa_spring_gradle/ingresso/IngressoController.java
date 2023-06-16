@@ -63,7 +63,7 @@ public class IngressoController {
         }
 
         if (sessao != null) {
-            Integer disp = sessao.buscaQtd() - ingressoService.ingressosBySessao(sessao);
+            Integer disp = /*sessao.buscaQtd() - */ingressoService.ingressosBySessao(sessao);
             System.out.println("Quantidade disponivel:" + disp);
             if (disp > 0) {
                 do {
