@@ -58,7 +58,7 @@ public class Sessao {
                 "]\n================================================================================";
     }
 
-//    public Integer buscaQtd(){
-//        return this.salaByCodSala.getCapacidade();
-//    }
+    public Integer buscaQtd(){
+        return this.salaByCodSala.getCapacidade();
+    }
 }

@@ -22,4 +22,12 @@ public class Ingresso {
     @JoinColumn(name = "sessao", referencedColumnName = "id")
     private Sessao sessaoBySessao;
 
+    @Override
+    public String toString() {
+        return "Ingresso[" +
+                "id: " + id +
+                " || tipo=" + tipo +
+                "|| ID sessao:" + sessaoBySessao.getId() +
+                ']';
+    }
 }
