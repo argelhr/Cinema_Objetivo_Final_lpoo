@@ -8,7 +8,7 @@ import br.edu.ifsul.cstsi.cinema_jpa_spring_gradle.sessao.SessaoController;
 import java.util.Scanner;
 
 public class CinemaController {
-    private static Scanner teclado = new Scanner(System.in);
+    private static final Scanner teclado = new Scanner(System.in);
 
     public static void main(String[] args) {
         int opcao;

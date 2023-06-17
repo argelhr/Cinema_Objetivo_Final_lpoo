@@ -1,5 +1,6 @@
 package br.edu.ifsul.cstsi.cinema_jpa_spring_gradle.sessao;
 
+import br.edu.ifsul.cstsi.cinema_jpa_spring_gradle.filme.Filme;
 import br.edu.ifsul.cstsi.cinema_jpa_spring_gradle.sala.Sala;
 import br.edu.ifsul.cstsi.cinema_jpa_spring_gradle.sala.SalaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,12 @@ public class SessaoService {
     public Sessao disable(Sessao sessao){
         sessao.setEncerrada(true);
         return rep.save(sessao);
+    }
+
+    public List<Sessao> getSessaoByFilme(Filme filme){
+        List<Sessao> sessaoList = rep.getSessoesByFilme(filme);
+
+        return  sessaoList;
     }
 
 

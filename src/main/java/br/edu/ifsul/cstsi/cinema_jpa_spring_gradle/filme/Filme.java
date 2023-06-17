@@ -37,4 +37,5 @@ public class Filme {
     public String toString() {
         return "ID: " + id + " || Titulo: " + titulo + "  || Duração: " + escreveTempo() + "|| Status: " + (getSituacao() ? "Ativo" : "Desativado");
     }
+
 }

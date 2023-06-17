@@ -1,6 +1,8 @@
 package br.edu.ifsul.cstsi.cinema_jpa_spring_gradle.filme;
 
 import br.edu.ifsul.cstsi.cinema_jpa_spring_gradle.CinemaController;
+import br.edu.ifsul.cstsi.cinema_jpa_spring_gradle.sessao.Sessao;
+import br.edu.ifsul.cstsi.cinema_jpa_spring_gradle.sessao.SessaoService;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -10,9 +12,11 @@ import java.util.Scanner;
 public class FilmeController {
     private static final Scanner teclado = new Scanner(System.in);
     private static FilmeService filmeService;
+    private static SessaoService sessaoService;
 
-    public FilmeController(FilmeService filmeService) {
+    public FilmeController(FilmeService filmeService, SessaoService sessaoService) {
         FilmeController.filmeService = filmeService;
+        FilmeController.sessaoService = sessaoService;
     }
 
     public static void main(String[] args) {
@@ -161,9 +165,20 @@ public class FilmeController {
                     if (opcao == 1L) {
                         if (filmeService.alterar(filme)) {
                             System.out.println("Filme atualizado com sucesso:\n" + filme);
-                        } else
-                            System.out.println("Operação cancelada...");
+                            List<Sessao> sessaoList = sessaoService.getSessaoByFilme(filme);
+                            if (!sessaoList.isEmpty()) {
+                                System.out.println("Sessões com este filme foram encerradas:");
+                                for (Sessao s : sessaoList) {
+                                    s = sessaoService.disable(s);
+                                    System.out.println("Sessão de id " + s.getId() + "foi desativada por tabela");
+                                }
+                            }
+                        } else {
+                            System.out.println("Não foi possivel realizar o cancelamento");
+                        }
 
+                    } else {
+                        System.out.println("Operação cancelada...");
                     }
                 } else {
                     System.out.println("Filme não foi encontrado");
@@ -316,14 +331,14 @@ public class FilmeController {
 
     }
 
-    public static void listarPorNome(){
+    public static void listarPorNome() {
         System.out.println("Qual o titulo que voce procura?");
 
         String nome = teclado.nextLine();
 
         List<Filme> filmes = filmeService.getFilmeByTitulo(nome);
 
-        if(filmes != null){
+        if (filmes != null) {
             System.out.println("Filmes encontrados");
             filmes.forEach(System.out::println);
         }

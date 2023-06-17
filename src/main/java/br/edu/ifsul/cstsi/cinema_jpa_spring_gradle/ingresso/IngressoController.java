@@ -240,8 +240,9 @@ public class IngressoController {
                     } else {
                         System.out.println("Operação cancelada com sucesso");
                     }
-                }else
-                System.out.println("Codigo de ingresso informado nao foi encontrado");
+                }else {
+                    System.out.println("Codigo de ingresso informado nao foi encontrado");
+                }
             } else
                 System.out.println("Opção cancelada");
         } else System.out.println("Nennhum ingresso de sessao ativa disponivel para cancelar");
