@@ -35,8 +35,8 @@ public class CinemaController {
             }
         } while (opcao > 0 && opcao <= 4);
     }
-    //todo listar sessao pelo filme
-    // todo inserir ingresso
-    // todo deativar sala -> desativar sessao
+    // todo desativar sala -> desativar sessao
     // todo desativar filme -> desativa sessao
+    // todo arrumar controller ingresso
+    // todo verificar vender
 }

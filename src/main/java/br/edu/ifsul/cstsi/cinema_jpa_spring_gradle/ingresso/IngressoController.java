@@ -15,6 +15,7 @@ public class IngressoController {
     public static IngressoService ingressoService;
     public static SessaoService sessaoService;
 
+
     public IngressoController(IngressoService ingressoService, SessaoService sessaoService) {
         IngressoController.ingressoService = ingressoService;
         IngressoController.sessaoService = sessaoService;
@@ -45,20 +46,23 @@ public class IngressoController {
                 case 4 -> listarIngressos(false);
                 case 5 -> listarIngressos(true);
                 case 0 -> CinemaController.main(null);
-                default -> System.out.println("Opção inesperada " + opcao);
+                default -> System.out.println("Opção inesperada ");
             }
         }
-        while (opcao < 0 || opcao > 2);
+        while (opcao > 0 && opcao < 6);
 
     }
 
     public static void vender() {
+
         long opcao;
+        int x = 0;
+
 
         List<Sessao> sessaoList = sessaoService.getSessoesBySituacao(false);
         sessaoList.forEach(System.out::println);
         if (sessaoList.isEmpty()) {
-            System.out.println("Não há sessões ativas até o momento");
+            System.out.println("Não há sessões ativas no momento");
             return;
         }
 
@@ -91,7 +95,6 @@ public class IngressoController {
                     }
                     while (qtd > disp);
 
-                    int x;
                     for (x = 0; x < qtd; x++) {
 
                         Ingresso ingresso = new Ingresso();
@@ -99,7 +102,7 @@ public class IngressoController {
                         ingresso.setSessaoBySessao(sessao);
 
                         do {
-                            System.out.printf("Qual tipo do ingresso n%2dº?(1.Meia 2.Inteira", (x + 1));
+                            System.out.printf("Qual tipo do ingresso n%2dº?(1.Meia 2.Inteira, zero para cancelar", (x + 1));
                             opcao = teclado.nextLong();
                             teclado.nextLine();
                             if (opcao < 0 || opcao > 2L)
@@ -107,13 +110,15 @@ public class IngressoController {
                         }
                         while (opcao < 0 || opcao > 2L);
 
+                        if (opcao == 0) {
+                            break;
+                        }
                         if (opcao == 1L) {
                             ingresso.setTipo(Tipo_ingresso.MEIA);
-                        } else if (opcao == 2L) {
+                        } else{
                             ingresso.setTipo(Tipo_ingresso.INTEIRA);
-                        } else {
-                            System.out.println("Cancelando compra..");
                         }
+
 
                         do {
                             System.out.printf("Deseja confirmar a compra nº" + (x + 1));
@@ -127,23 +132,18 @@ public class IngressoController {
 
                         ingresso = ingressoService.insert(ingresso);
                         System.out.println("Ingresso registrado com sucesso: " + ingresso);
-
                     }
-                    System.out.printf("Processo de compra finalizado com %d ingressos vendidos\n", x);
-
-                } else {
-                    System.out.println("Sessão já esta lotada");
                 }
+                System.out.printf("Processo de compra finalizado com %d ingressos vendidos\n", x);
+
             } else {
-                System.out.println("Nenhuma sessao ativa no momento, venda de ingressos cancela no momento");
+                System.out.println("codigo de Sessão nao foi encontrado");
             }
+        } else {
+            System.out.println("Operação cancelada no inicio...");
         }
-        else{
-            System.out.println("Operador cancelou a solicitação...");
-        }
-
-
     }
+
 
     public static void alterar() {
 
@@ -153,6 +153,7 @@ public class IngressoController {
             System.out.println("Não há ingressos cadastrados para sessoes ativas");
             return;
         }
+        ingressos.forEach(System.out::println);
         System.out.println("Qual o ingresso que deseja alterar o tipo?(zero para cancelar");
         opcao = teclado.nextLong();
         teclado.nextLine();
@@ -239,7 +240,7 @@ public class IngressoController {
                     } else {
                         System.out.println("Operação cancelada com sucesso");
                     }
-                }
+                }else
                 System.out.println("Codigo de ingresso informado nao foi encontrado");
             } else
                 System.out.println("Opção cancelada");
