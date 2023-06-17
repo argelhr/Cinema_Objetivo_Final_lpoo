@@ -165,14 +165,7 @@ public class FilmeController {
                     if (opcao == 1L) {
                         if (filmeService.alterar(filme)) {
                             System.out.println("Filme atualizado com sucesso:\n" + filme);
-                            List<Sessao> sessaoList = sessaoService.getSessaoByFilme(filme);
-                            if (!sessaoList.isEmpty()) {
-                                System.out.println("Sessões com este filme foram encerradas:");
-                                for (Sessao s : sessaoList) {
-                                    s = sessaoService.disable(s);
-                                    System.out.println("Sessão de id " + s.getId() + "foi desativada por tabela");
-                                }
-                            }
+                            desativaSessaoPorTabela(filme);
                         } else {
                             System.out.println("Não foi possivel realizar o cancelamento");
                         }
@@ -244,6 +237,7 @@ public class FilmeController {
                             if (filmeService.desativa(filme.getId()) != null) {
                                 System.out.println("Filme Desativado com sucesso");
                                 System.out.println(filme);
+                                desativaSessaoPorTabela(filme);
                             } else {
                                 System.out.println("Ocorreu algum problema...");
                             }
@@ -262,6 +256,17 @@ public class FilmeController {
         }
         while (opcao != 0);
 
+    }
+
+    private static void desativaSessaoPorTabela(Filme filme) {
+        List<Sessao> sessaoList = sessaoService.getSessaoByFilme(filme);
+        if (!sessaoList.isEmpty()) {
+            System.out.println("Sessões com este filme foram encerradas:");
+            for (Sessao s : sessaoList) {
+                s = sessaoService.disable(s);
+                System.out.println("Sessão de id " + s.getId() + "foi desativada por tabela");
+            }
+        }
     }
 
     public static void reativar() {
