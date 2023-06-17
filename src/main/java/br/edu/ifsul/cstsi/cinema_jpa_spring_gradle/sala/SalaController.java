@@ -1,6 +1,7 @@
 package br.edu.ifsul.cstsi.cinema_jpa_spring_gradle.sala;
 
 import br.edu.ifsul.cstsi.cinema_jpa_spring_gradle.CinemaController;
+import br.edu.ifsul.cstsi.cinema_jpa_spring_gradle.sessao.Sessao;
 import br.edu.ifsul.cstsi.cinema_jpa_spring_gradle.sessao.SessaoService;
 import org.springframework.stereotype.Controller;
 
@@ -13,9 +14,6 @@ public class SalaController {
     private static SalaService salaService;
     private static SessaoService sessaoService;
 
-    {
-        System.out.println("Nenhum filme desativado no momento");
-    }
 
     public SalaController(SalaService salaService, SessaoService sessaoService) {
         SalaController.salaService = salaService;
@@ -42,12 +40,11 @@ public class SalaController {
                 case 3 -> desativar();
                 case 4 -> reativar();
                 case 5 -> listarSalas();
+                case 0 -> CinemaController.main(null);
                 default -> System.out.println("Opção incorreta tente novamente!");
             }
 
         } while (opcao != 0);
-
-        CinemaController.main(null);
 
     }
 
@@ -142,13 +139,12 @@ public class SalaController {
                                 if (opcao < 1 || opcao > 2) System.out.println("Opção incorreta, tente novamente");
                             } while (opcao < 1 || opcao > 2);
                             if (opcao == 1) {
-                                if (salaService.update(sala) != null) {
 
-                                    System.out.println("Sala Atualizada: " + sala);
-//                                    System.out.println("Sessões desativadas com esta sala foram desativadas");
-                                }
-//                            System.out.println("Sessoes desativadas por tabela:");
-//                            List<Sessao> sessaos = sessaoService.findBysala(sala);
+                                sala = salaService.update(sala);
+                                System.out.println("Sala Atualizada: " + sala);
+
+                                desativaSessaoPorTabela(sala);
+
                             } else {
                                 System.out.println("Operação cancelada pelo usuario...");
                             }
@@ -173,7 +169,7 @@ public class SalaController {
 
     public static void desativar() {
 
-        long opcao = 0;
+        long opcao;
         do {
 
             List<Sala> salaList = getSalas(true);
@@ -205,8 +201,11 @@ public class SalaController {
                     if (opcao == 1) {
                         if (salaService.desativar(sala) != null) {
                             System.out.println("Sala desativada: " + sala);
+                            desativaSessaoPorTabela(sala);
                         } else
                             System.out.println("Ocorreu algum problema ao tentar desativar");
+                    } else {
+                        System.out.println("Operação cancelada...");
                     }
                 } else {
                     System.out.println("Não foi encontrada nenhma sala com este codigo");
@@ -218,6 +217,7 @@ public class SalaController {
                     if (opcao < 1 || opcao > 2)
                         System.out.println("Opção invalida");
                 } while ((opcao < 1 || opcao > 2));
+
                 if (opcao == 2)
                     opcao = 0;
 
@@ -228,6 +228,17 @@ public class SalaController {
         } while (opcao != 0);
     }
 
+    private static void desativaSessaoPorTabela(Sala sala) {
+        List<Sessao> sessaoList = sessaoService.getSessaoBySala(sala);
+        if (!sessaoList.isEmpty()) {
+            System.out.println("Sessões com esta sala foram encerradas:");
+            for (Sessao s : sessaoList) {
+                s = sessaoService.disable(s);
+                System.out.println("Sala de id " + s.getId() + "foi desativada por tabela");
+            }
+        }
+    }
+
     public static List<Sala> getSalas(Boolean bool) {
         List<Sala> salaList = salaService.getSalasBySituacao(bool);
         if (salaList.isEmpty()) return null;
@@ -235,7 +246,7 @@ public class SalaController {
     }
 
     public static void reativar() {
-        long opcao = 0;
+        long opcao;
         do {
             Sala sala = null;
 
@@ -267,8 +278,11 @@ public class SalaController {
                     if (opcao == 1) {
                         System.out.println("Sala reativada: " + salaService.reativar(sala));
                     }
+                    else{
+                        System.out.println("Operação cancelada no final pelo usuario");
+                    }
                 } else {
-                    System.out.println("Operação cancelada");
+                    System.out.println("Operação cancelada pelo usuario");
                     do {
                         System.out.println("Deseja realizar o processo novamente?(1.Sim 2.Não");
                         opcao = teclado.nextLong();

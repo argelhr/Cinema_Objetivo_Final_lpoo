@@ -17,7 +17,7 @@ public interface SessaoRepository extends JpaRepository<Sessao,Long> {
     @Query(value = "SELECT s from Sessao s where s.filmeByCodFilme = ?1 and s.encerrada = false")
     List<Sessao> getSessoesByFilme(Filme filme);
     @Query(value = "SELECT s from Sessao s where s.salaByCodSala = ?1 and s.encerrada = false")
-    List<Sessao> getSessaoBySala(Sala sala);
+    List<Sessao> getSessoesBySala(Sala sala);
 
 
 }

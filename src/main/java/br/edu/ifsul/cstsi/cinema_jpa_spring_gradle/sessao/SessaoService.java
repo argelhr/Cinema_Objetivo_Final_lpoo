@@ -50,5 +50,12 @@ public class SessaoService {
         return  sessaoList;
     }
 
+    public List<Sessao> getSessaoBySala(Sala sala){
+        List<Sessao> sessaoList = rep.getSessoesBySala(sala);
+
+        return  sessaoList;
+
+    }
+
 
 }
