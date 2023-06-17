@@ -2,13 +2,11 @@ package br.edu.ifsul.cstsi.cinema_jpa_spring_gradle.sessao;
 
 import br.edu.ifsul.cstsi.cinema_jpa_spring_gradle.filme.Filme;
 import br.edu.ifsul.cstsi.cinema_jpa_spring_gradle.sala.Sala;
-import br.edu.ifsul.cstsi.cinema_jpa_spring_gradle.sala.SalaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,21 +15,12 @@ public class SessaoService {
     @Autowired
     private SessaoRepository rep;
 
-    public Sessao getSessaoById(Long id){
-
-        Optional<Sessao> sessao = rep.findById(id);
-        if(sessao.isPresent())
-            return sessao.get();
-        return null;
-
+    public List<Sessao> getSessoesByDataAndSituacaoAndSala(LocalDate data, Boolean bool, Sala sala) {
+        return rep.getSessoesByDataAndSituacaoAndSala(data, bool, sala);
     }
-    public List<Sessao> getSessoesByDataAndSituacaoAndSala(LocalDate data, Boolean bool, Sala sala){
-        List<Sessao> sessoes= rep.getSessoesByDataAndSituacaoAndSala(data, bool, sala);
-        return sessoes;
-    }
-    public List<Sessao> getSessoesBySituacao(Boolean bool){
-        List<Sessao> sessaoList = rep.getSessoesBySituacao(bool);
-        return sessaoList;
+
+    public List<Sessao> getSessoesBySituacao(Boolean bool) {
+        return rep.getSessoesBySituacao(bool);
     }
 
     public Sessao insert(Sessao sessao) {
@@ -39,22 +28,29 @@ public class SessaoService {
         return rep.save(sessao);
     }
 
-    public Sessao disable(Sessao sessao){
+    public Sessao disable(Sessao sessao) {
         sessao.setEncerrada(true);
         return rep.save(sessao);
     }
 
-    public List<Sessao> getSessaoByFilme(Filme filme){
-        List<Sessao> sessaoList = rep.getSessoesByFilme(filme);
-
-        return  sessaoList;
+    public List<Sessao> getSessaoByFilme(Filme filme) {
+        return rep.getSessoesByFilme(filme);
     }
 
-    public List<Sessao> getSessaoBySala(Sala sala){
-        List<Sessao> sessaoList = rep.getSessoesBySala(sala);
+    public List<Sessao> getSessaoBySala(Sala sala) {
+        return rep.getSessoesBySala(sala);
+    }
 
-        return  sessaoList;
+    public Sessao updateHora(Sessao sessao){
+        Assert.notNull(sessao.getId(),"Não pode ser nulo");
+        Optional<Sessao> sessaoOptional = rep.findById(sessao.getId());
 
+        if(sessaoOptional.isPresent()){
+            Sessao sessaoNova = sessaoOptional.get();
+            sessaoNova.setHoraSessao(sessao.getHoraSessao());
+            return rep.save(sessao);
+        }
+        return null;
     }
 
 

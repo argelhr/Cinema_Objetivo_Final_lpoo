@@ -1,0 +1,45 @@
+create table cinema.filme
+(
+    id       bigint auto_increment
+        primary key,
+    duracao  int          null,
+    situacao bit          null,
+    titulo   varchar(255) null
+);
+
+create table cinema.sala
+(
+    id         bigint auto_increment
+        primary key,
+    capacidade int null,
+    status     bit null
+);
+
+create table cinema.sessao
+(
+    id            bigint auto_increment
+        primary key,
+    dt_sessao     date    null,
+    encerrada     bit     null,
+    hora_sessao   time(6) null,
+    valor_inteira double  null,
+    valor_meia    double  null,
+    cod_filme     bigint  not null,
+    cod_sala      bigint  not null,
+    constraint FKj5bgpuwdrtnnqvlb14d4h49cs
+        foreign key (cod_sala) references cinema.sala (id),
+    constraint FKrc5klepy7e3asohg18wixgoa8
+        foreign key (cod_filme) references cinema.filme (id)
+);
+
+create table cinema.ingresso
+(
+    id     bigint auto_increment
+        primary key,
+    tipo   tinyint null
+        check (`tipo` between 0 and 1),
+    sessao bigint  null,
+    constraint FKgdcws35r45o0d8yhu8a9n575m
+        foreign key (sessao) references cinema.sessao (id)
+);
+

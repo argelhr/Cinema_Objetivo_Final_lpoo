@@ -248,7 +248,6 @@ public class SalaController {
     public static void reativar() {
         long opcao;
         do {
-            Sala sala = null;
 
             List<Sala> salas = salaService.getSalasBySituacao(false);
 
@@ -259,6 +258,8 @@ public class SalaController {
                 teclado.nextLine();
 
                 if (opcao != 0) {
+                    Sala sala = null;
+
                     for (Sala s : salas) {
                         if (s.getId() == opcao) {
                             sala = s;

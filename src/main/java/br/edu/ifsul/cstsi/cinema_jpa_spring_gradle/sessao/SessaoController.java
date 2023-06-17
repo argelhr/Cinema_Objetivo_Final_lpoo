@@ -33,8 +33,9 @@ public class SessaoController {
                     ==========Area de SESSOES==========
                     1. Cadastrar Sessao
                     2. Finalizar Sessao
-                    3. Listar Sessões Ativas
-                    4. Listar Sessões Desativadas
+                    3. Alterar Data da sessão
+                    4. Listar Sessões Ativas
+                    5. Listar Sessões Desativadas
                     0. Voltar ao menu anterior
                     """);
             opcao = teclado.nextInt();
@@ -42,13 +43,14 @@ public class SessaoController {
             switch (opcao) {
                 case 1 -> inserir();
                 case 2 -> desativar();
-                case 3 -> listarBySituacao(false);
-                case 4 -> listarBySituacao(true);
+                case 3 -> alterarHora();
+                case 4 -> listarBySituacao(false);
+                case 5 -> listarBySituacao(true);
                 case 0 -> CinemaController.main(null);
                 default -> System.out.println("Opção incorreta, tente novamente");
             }
 
-        } while (opcao > 0 && opcao < 5);
+        } while (opcao > 0 && opcao < 6);
 
     }
 
@@ -172,6 +174,102 @@ public class SessaoController {
 
     }
 
+    public static void alterarHora() {
+        long opcao;
+        List<Sessao> sessaoList = sessaoService.getSessoesBySituacao(false);
+        if (!sessaoList.isEmpty()) {
+
+            sessaoList.forEach(System.out::println);
+            System.out.println("Qual a sessão a ser atualizada?(zero para cancelar)");
+            opcao = teclado.nextLong();
+            teclado.nextLine();
+
+            if (opcao != 0) {
+                Sessao sessao = null;
+                for (Sessao s : sessaoList) {
+                    if (s.getId() == opcao) {
+                        sessao = s;
+                        break;
+                    }
+                }
+                if (sessao != null) {
+                    System.out.println("Qual o novo horario?");
+
+                    sessao.setHoraSessao(montaHora());
+
+                    if (verificaDisponibilidade(sessao)) {
+                        do {
+                            System.out.println("Deseja realmente atualizar o horario desta sessao?(1.sim 2.Não)");
+                            opcao = teclado.nextLong();
+                            teclado.nextLine();
+                            if (opcao < 1 || opcao > 2)
+                                System.out.println("Ops, opção incorreta");
+                        }
+                        while (opcao < 1 || opcao > 2);
+                        if (opcao == 1) {
+                            sessao = sessaoService.updateHora(sessao);
+                            System.out.println("Sessao atualizada:" + sessao);
+                        } else {
+                            System.out.println("Operação cancelada no final pelo usuario");
+                        }
+                    } else {
+                        System.out.println("O horario selecionado nao esta disponivel");
+                    }
+                } else {
+                    System.out.println("Codigo informado nao encontrado nas sessoes");
+                }
+            } else {
+                System.out.println("Cancelado pelo usuario no inicio ");
+            }
+        } else {
+            System.out.println("Não existem sessoes ativas no momento");
+        }
+        System.out.println("Retornando ao menu anterior...");
+    }
+
+    public static void desativar() {
+        long opcao;
+
+        List<Sessao> sessaoList = sessaoService.getSessoesBySituacao(false);
+
+        if (!sessaoList.isEmpty()) {
+
+            sessaoList.forEach(System.out::println);
+
+            System.out.println("Qual a sessão a ser desabilitada");
+            opcao = teclado.nextLong();
+            teclado.nextLine();
+
+            Sessao sessao = null;
+            for (Sessao s : sessaoList) {
+                if (s.getId() == opcao) {
+                    sessao = s;
+                }
+            }
+
+            if (sessao != null) {
+
+                do {
+                    System.out.println(sessao);
+                    System.out.println("Deseja desativar a seção acima?(1.sim 2.Não");
+                    opcao = teclado.nextLong();
+                    teclado.nextLine();
+                } while (opcao != 1 && opcao != 2);
+
+                if (opcao == 1) {
+                    sessao = sessaoService.disable(sessao);
+                    System.out.println("Sessao desabilitada:" + sessao);
+                } else {
+                    System.out.println("Operação foi cancelada");
+                }
+            } else {
+                System.out.println("Sessao nao foi encontrada");
+            }
+
+
+        }
+    }
+
     public static LocalDate montaData() {
         try {
             int dia, mes;
@@ -232,69 +330,25 @@ public class SessaoController {
         List<Sessao> sessaoList = sessaoService.getSessoesByDataAndSituacaoAndSala(sessao.getDtSessao(), false, sessao.getSalaByCodSala());
 
         for (Sessao s : sessaoList) {
-            Duration tempo;
-            if (sessao.getHoraSessao().isBefore(s.getHoraSessao())) {
-                tempo = Duration.between(sessao.getHoraSessao(), s.getHoraSessao());
-                long horas = tempo.toHours();
-                long mins = tempo.toMinutes();
-                if (sessao.getFilmeByCodFilme().getDuracao() > horas * 60 + mins + 20) {
-                    return false;
-                }
-            } else {
-                tempo = Duration.between(s.getHoraSessao(), sessao.getHoraSessao());
-                long horas = tempo.toHours();
-                long mins = tempo.toMinutes();
-                if (s.getFilmeByCodFilme().getDuracao() > horas * 60 + mins + 20) {
-                    return false;
-                }
+            if (s.getId() != sessao.getId()) {
+                if (sessao.getHoraSessao().isBefore(s.getHoraSessao())) {
+                    if (calculaTempoEntreSessoes(sessao, s)) return false;
+                } else {
+                    if (calculaTempoEntreSessoes(s, sessao)) return false;
 
+                }
             }
 
         }
         return true;//
     }
 
-    public static void desativar() {
-        long opcao;
-
-        List<Sessao> sessaoList = sessaoService.getSessoesBySituacao(false);
-
-        if (!sessaoList.isEmpty()) {
-
-            sessaoList.forEach(System.out::println);
-
-            System.out.println("Qual a sessão a ser desabilitada");
-            opcao = teclado.nextLong();
-            teclado.nextLine();
-
-            Sessao sessao = null;
-            for (Sessao s : sessaoList) {
-                if (s.getId() == opcao) {
-                    sessao = s;
-                }
-            }
-
-            if (sessao != null) {
-
-                do {
-                    System.out.println(sessao);
-                    System.out.println("Deseja desativar a seção acima?(1.sim 2.Não");
-                    opcao = teclado.nextLong();
-                    teclado.nextLine();
-                } while (opcao != 1 && opcao != 2);
-
-                if (opcao == 1) {
-                    sessao = sessaoService.disable(sessao);
-                    System.out.println("Sessao desabilitada:" + sessao);
-                } else {
-                    System.out.println("Operação foi cancelada");
-                }
-            } else {
-                System.out.println("Sessao nao foi encontrada");
-            }
-
-
-        }
+    private static Boolean calculaTempoEntreSessoes(Sessao sessao, Sessao s) {
+        Duration tempo;
+        tempo = Duration.between(sessao.getHoraSessao(), s.getHoraSessao());
+        long horas = tempo.toHours();
+        long mins = tempo.toMinutes();
+        return sessao.getFilmeByCodFilme().getDuracao() > horas * 60 + mins + 20;
     }
 
     public static void listarBySituacao(Boolean bool) {
@@ -306,8 +360,6 @@ public class SessaoController {
             sessaoList.forEach(System.out::println);
 
     }
-
-
 }
 
 
