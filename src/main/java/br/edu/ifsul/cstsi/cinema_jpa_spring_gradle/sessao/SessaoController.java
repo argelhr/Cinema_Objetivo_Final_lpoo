@@ -102,7 +102,7 @@ public class SessaoController {
 
                                 sessao.setHoraSessao(horario);
 
-                                if (verificaDisponibilidade(sessao)) {
+                                if (verificaDisponibilidadeNova(sessao)) {
 
                                     do {
                                         System.out.println("Qual o valor da entrada inteira");
@@ -339,6 +339,20 @@ public class SessaoController {
                 }
             }
 
+        }
+        return true;//
+    }
+
+    public static Boolean verificaDisponibilidadeNova(Sessao sessao) {
+        List<Sessao> sessaoList = sessaoService.getSessoesByDataAndSituacaoAndSala(sessao.getDtSessao(), false, sessao.getSalaByCodSala());
+
+        for (Sessao s : sessaoList) {
+            if (sessao.getHoraSessao().isBefore(s.getHoraSessao())) {
+                if (calculaTempoEntreSessoes(sessao, s)) return false;
+            } else {
+                if (calculaTempoEntreSessoes(s, sessao)) return false;
+
+            }
         }
         return true;//
     }
